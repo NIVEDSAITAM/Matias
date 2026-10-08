@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block content %}
+<div class="section-head">
+    <div>
+        <span class="eyebrow">2. STUDENT DASHBOARD</span>
+        <h1>Hello, {{session.get('name')}}!</h1>
+        <p>Student ID: secured</p>
+    </div>
+    <a class="btn" href="{{url_for('new_print')}}">▣ Print a Document</a>
+</div>
+<div class="cards3">
+ <div class="card">
+    <small>Printer Availability</small>
+    <h2><i class="green"></i> Available</h2>
+    <p>Printer #1 is ready for use</p>
+</div>
+ <div class="card">
+    <small>Current Print Job</small>
+    <h2>▤ No active job</h2>
+    <p>Your current job appears here</p>
+</div>
+ <div class="card">
+    <small>Quick Action</small>
+    <h2>Upload PDF</h2>
+    <a href="{{url_for('new_print')}}">Start a print job →</a>
+</div>
+</div>
+<div class="card table-card">
+    <div class="card-head">
+        <h2>Recent Print Jobs</h2>
+        <a href="{{url_for('student_history')}}">View All</a>
+    </div>
+{% if jobs %}<table><tr><th>File Name</th><th>Pages</th><th>Status</th><th>Date</th><th></th></tr>
+{% for j in jobs %}<tr><td>{{j.file}}</td><td>{{j.pages}}</td><td><span class="pill {{j.status|lower}}">● {{j.status}}</span></td><td>{{j.created_at}}</td><td><a href="{{url_for('tracking',job_id=j.id)}}">Track</a></td></tr>{% endfor %}
+</table>{% else %}<p class="muted">No print jobs yet.</p>{% endif %}
+</div>{% endblock %}

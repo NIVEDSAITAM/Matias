@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-head">
+    <div>
+        <span class="eyebrow">ADMIN / OPERATOR SIDE</span>
+        <h1>Notifications</h1>
+    </div>
+</div>
+
+<div class="card">
+    {% if notes %}
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Message</th>
+            <th>Date</th>
+        </tr>
+        {% for kind, msg, date in notes %}
+        <tr>
+            <td>
+                <span class="pill {{ 'error' if kind == 'error' else 'printing' if kind == 'warn' else 'paid' }}">
+                    {{ kind|upper }}
+                </span>
+            </td>
+            <td>{{ msg }}</td>
+            <td>{{ date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No notifications right now.</p>
+    {% endif %}
+</div>
+{% endblock %}

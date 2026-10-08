@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block content %}
+<div class="auth-page">
+<div class="auth-title"><span class="eyebrow">STUDENT SIDE</span><h1>1. Login / Registration</h1></div>
+<div class="auth-grid">
+ <div class="login-card">
+  <div class="logo-big">▣</div><h2>Smart Printing</h2><p>Payment System</p>
+  <form method="post" action="{{url_for('login')}}">
+   <label>♙ Student ID / Email</label><input name="email" placeholder="Student ID or email" required>
+   <label>▣ Password</label><input name="password" type="password" placeholder="Password" required>
+   <button class="btn wide">Login</button>
+  </form>
+  <small>Don't have an account? <a href="{{url_for('register')}}">Register</a></small>
+ </div>
+ <div class="register-preview">
+  <h2>Create an Account</h2>
+  <a class="btn wide" href="{{url_for('register')}}">Register</a>
+  <p>Already have an account? <a href="{{url_for('login')}}">Login</a></p>
+ </div>
+</div>
+<div class="demo">Admin demo: <b>admin@smartprint.local</b> / <b>admin123</b></div>
+</div>{% endblock %}

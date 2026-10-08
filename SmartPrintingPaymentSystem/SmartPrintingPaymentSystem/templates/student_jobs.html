@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block content %}
+<div class="section-head"><div><span class="eyebrow">{{eyebrow}}</span><h1>{{title}}</h1></div></div>
+<div class="card table-card">
+{% if jobs %}
+<table><tr><th>File</th><th>Pages × Copies</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr>
+{% for j in jobs %}<tr>
+  <td>{{j.file}}</td><td>{{j.pages}} × {{j.copies}}</td><td>₱{{"%.0f"|format(j.total)}}</td>
+  <td>{{j.payment_status}}</td><td><span class="pill {{j.status|lower}}">● {{j.status}}</span></td>
+  <td>{{j.created_at}}</td>
+  <td>{% if j.payment_status=='PAID' %}<a href="{{url_for('tracking',job_id=j.id)}}">Track</a>
+      {% else %}<a href="{{url_for('summary',job_id=j.id)}}">Pay</a>{% endif %}</td>
+</tr>{% endfor %}</table>
+{% else %}<p class="muted">Nothing here yet.</p>{% endif %}
+</div>{% endblock %}

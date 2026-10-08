@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-head">
+    <div>
+        <span class="eyebrow">ADMIN / OPERATOR SIDE</span>
+        <h1>
+            {{ {'dashboard': '7. Admin Dashboard',
+                'queue': '8. Print Queue',
+                'printers': '9. Printer Monitoring'}[view] }}
+        </h1>
+    </div>
+</div>
+
+{% if view == 'dashboard' %}
+<div class="stats">
+    <div><small>Total Prints</small><strong>{{ stats.prints }}</strong></div>
+    <div><small>Total Payments</small><strong>₱{{ stats.payments }}</strong></div>
+    <div><small>Active Jobs</small><strong>{{ stats.active }}</strong></div>
+    <div><small>Pending Jobs</small><strong>{{ stats.pending }}</strong></div>
+</div>
+{% endif %}
+
+<div class="admin-grid" style="{{ 'grid-template-columns:1fr' if view != 'dashboard' }}">
+
+    {% if view in ('dashboard', 'queue') %}
+    <div class="card" id="queue">
+        <h2>8. Print Queue</h2>
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Student</th>
+                <th>File</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for j in jobs %}
+            <tr>
+                <td>#{{ "%03d"|format(j.id) }}</td>
+                <td>{{ j.name }}</td>
+                <td>{{ j.file }}</td>
+                <td><span class="pill {{ j.payment_status|lower }}">{{ j.payment_status }}</span></td>
+                <td><span class="pill">{{ j.status }}</span></td>
+                <td>
+                    <form method="post" action="{{ url_for('admin_status', job_id=j.id) }}">
+                        <select name="status">
+                            {% for s in ['QUEUED', 'PRINTING', 'COMPLETED', 'ERROR', 'CANCELLED'] %}
+                            <option {{ 'selected' if j.status == s }}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="mini">Save</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if view in ('dashboard', 'printers') %}
+    <div class="card monitor" id="printers">
+        <h2>9. Printer Monitoring</h2>
+
+        <div class="printer-box">
+            <h3>▣ Printer #1</h3>
+            <b><i class="green"></i> AVAILABLE</b>
+            <p>Paper Level</p>
+            <div class="bar"><span style="width:80%"></span></div>
+            <small>Prototype monitor • ESP32 not connected</small>
+        </div>
+
+        <div class="printer-box">
+            <h3>▣ Printer #2</h3>
+            <b><i class="yellow"></i> PRINTING</b>
+            <p>Paper Level</p>
+            <div class="bar orange"><span style="width:40%"></span></div>
+            <small>Prototype status</small>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}{% block content %}
+<div class="section-head"><div><span class="eyebrow">3. UPLOAD DOCUMENT</span><h1>Print a Document</h1></div></div>
+<div class="card wizard">
+  <div class="steps"><b>1<br><small>Upload</small></b><span>→</span><b>2<br><small>Settings</small></b><span>→</span><b>3<br><small>Summary</small></b><span>→</span><b>4<br><small>Payment</small></b></div>
+
+  <form id="printForm" method="post" enctype="multipart/form-data">
+    <div class="drop" id="dropZone">
+      <div class="upload-icon">☁</div>
+      <h2>Drag and drop your PDF file here</h2>
+      <p>or</p>
+
+      <label class="btn" for="pdfFile">Choose File</label>
+      <input id="pdfFile" type="file" name="file" accept="application/pdf,.pdf" required style="display:none">
+
+      <div id="selectedFile" class="selected-file" aria-live="polite">
+        No file selected
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <div><label>Copies</label><input type="number" name="copies" value="2" min="1" max="100"></div>
+      <div><label>Color</label><select name="color"><option value="BW">Black & White (₱2/page)</option><option value="COLOR">Colored (₱5/page)</option></select></div>
+      <div><label>Paper Size</label><select name="paper"><option>A4</option><option>Letter</option></select></div>
+    </div>
+
+    <button type="submit" class="btn right">Continue</button>
+  </form>
+</div>
+
+<style>
+.selected-file {
+  margin: 18px auto 0;
+  padding: 12px 16px;
+  max-width: 520px;
+  border: 1px solid #d8c7b7;
+  border-radius: 8px;
+  background: #f8f1e8;
+  color: #5b3824;
+  font-weight: 600;
+  text-align: center;
+}
+.selected-file.has-file {
+  border-color: #8b6244;
+  background: #eee2d5;
+}
+.drop.dragover {
+  border-color: #7a4d2e;
+  background: #f5eadf;
+}
+</style>
+
+<script>
+(function () {
+  const input = document.getElementById('pdfFile');
+  const info = document.getElementById('selectedFile');
+  const drop = document.getElementById('dropZone');
+  const form = document.getElementById('printForm');
+
+  function showFile(file) {
+    if (!file) {
+      info.textContent = 'No file selected';
+      info.classList.remove('has-file');
+      return;
+    }
+
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      info.textContent = 'Please select a PDF file.';
+      info.classList.remove('has-file');
+      input.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      info.textContent = 'File is too large. Maximum size is 10 MB.';
+      info.classList.remove('has-file');
+      input.value = '';
+      return;
+    }
+
+    info.textContent = '📄 ' + file.name + '  •  ' + (file.size / 1024 / 1024).toFixed(2) + ' MB';
+    info.classList.add('has-file');
+  }
+
+  input.addEventListener('change', function () {
+    showFile(input.files[0]);
+  });
+
+  ['dragenter', 'dragover'].forEach(function (eventName) {
+    drop.addEventListener(eventName, function (event) {
+      event.preventDefault();
+      drop.classList.add('dragover');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(function (eventName) {
+    drop.addEventListener(eventName, function (event) {
+      event.preventDefault();
+      drop.classList.remove('dragover');
+    });
+  });
+
+  drop.addEventListener('drop', function (event) {
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+
+    try {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      input.files = dataTransfer.files;
+    } catch (e) {
+      // Browser may not allow assigning files programmatically; selection still works via Choose File.
+    }
+
+    showFile(file);
+  });
+
+  form.addEventListener('submit', function (event) {
+    if (!input.files || input.files.length === 0) {
+      event.preventDefault();
+      info.textContent = 'Please choose a PDF file before continuing.';
+      info.classList.add('has-file');
+    }
+  });
+})();
+</script>
+{% endblock %}
