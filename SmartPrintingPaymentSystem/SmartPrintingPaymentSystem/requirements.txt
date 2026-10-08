@@ -1,0 +1,4 @@
+Flask==3.1.2
+cryptography==46.0.2
+PyPDF2==3.0.1
+Werkzeug==3.1.3

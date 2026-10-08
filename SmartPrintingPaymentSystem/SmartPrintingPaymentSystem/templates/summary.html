@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-head">
+    <div>
+        <span class="eyebrow">5. PRINTING SUMMARY</span>
+        <h1>Print a Document</h1>
+    </div>
+</div>
+
+<div class="card wizard">
+
+    <div class="steps">
+        <b class="done">✓<br><small>Upload</small></b>
+        <span>→</span>
+        <b class="done">✓<br><small>Settings</small></b>
+        <span>→</span>
+        <b class="current">3<br><small>Summary</small></b>
+        <span>→</span>
+        <b>4<br><small>Payment</small></b>
+    </div>
+
+    <div class="summary-grid">
+        <div class="card inner">
+            <h2>▤ Printing Summary</h2>
+            <p><b>File:</b> {{ job.file }}</p>
+            <p><b>Pages:</b> {{ job.pages }}</p>
+            <p><b>Copies:</b> {{ job.copies }}</p>
+            <p><b>Color:</b> {{ 'Colored' if job.color == 'COLOR' else 'Black & White' }}</p>
+            <p><b>Paper Size:</b> {{ job.paper }}</p>
+        </div>
+
+        <div class="card inner">
+            <h2>Price Summary</h2>
+            <p>{{ job.pages }} pages × {{ job.copies }} copies × ₱{{ 5 if job.color == 'COLOR' else 2 }}</p>
+            <h1 class="price">Total: ₱{{ "%.0f"|format(job.total) }}</h1>
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('pay', job_id=job.id) }}">
+        <button class="btn right">PAY NOW</button>
+    </form>
+
+</div>
+{% endblock %}

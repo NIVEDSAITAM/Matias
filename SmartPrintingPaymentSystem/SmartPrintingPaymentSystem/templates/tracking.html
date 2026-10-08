@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-head">
+    <div>
+        <span class="eyebrow">6. PAYMENT & TRACKING</span>
+        <h1>Payment & Tracking</h1>
+    </div>
+</div>
+
+<div class="track-grid">
+
+    <div class="card">
+        <h2>Payment</h2>
+        <h3>Order Summary</h3>
+        <p>
+            ▤ {{ job.file }}
+            <b class="right-text">₱{{ "%.0f"|format(job.total) }}</b>
+        </p>
+        <p>{{ job.pages }} pages × {{ job.copies }} copies ({{ 'B&W' if job.color == 'BW' else 'Color' }})</p>
+        <hr>
+        <h3>Payment Method</h3>
+        <p>▣ GCash (Simulated Payment Provider)</p>
+
+        {% if job.payment_status == 'PAID' %}
+        <p>Payment Status: <span class="success-box">✓ SUCCESSFUL</span></p>
+        <p>Transaction ID: {{ job.transaction_id }}</p>
+        {% else %}
+        <p>Payment Status: <b>PENDING</b></p>
+        <a class="btn" href="{{ url_for('summary', job_id=job.id) }}">Pay now</a>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>Print Job Tracking</h2>
+
+        <div class="timeline">
+            <div class="t active">✓ <b>PAID</b><small>Payment confirmed</small></div>
+            <div class="t active">● <b>QUEUED</b><small>Waiting for printer</small></div>
+            <div class="t {{ 'active' if job.status in ['PRINTING', 'COMPLETED'] else '' }}">
+                ● <b>PRINTING</b>
+                <small>{{ 'In progress' if job.status in ['PRINTING', 'COMPLETED'] else 'Waiting...' }}</small>
+            </div>
+            <div class="t {{ 'active' if job.status == 'COMPLETED' else '' }}">
+                ● <b>COMPLETED</b>
+                <small>{{ 'Ready for pickup' if job.status == 'COMPLETED' else 'Waiting...' }}</small>
+            </div>
+        </div>
+
+        <h3>Current Status</h3>
+        <span class="status-big">● {{ job.status }}</span>
+        <a class="btn wide" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
+
+</div>
+{% endblock %}
